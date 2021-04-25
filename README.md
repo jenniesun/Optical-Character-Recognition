@@ -1,6 +1,6 @@
 # IDS705_TeamOrange
 # Optical Character Recognition
-- This project aims to envision a solution to real-time street recognition, which can have impactful applications including but not limited to: assisting handicapped people, or auto-pilot systems. 
+- This project aims to envision a solution to real-time street recognition problem, which can have impactful applications including but not limited to: assisting the visually impaired and auto-pilot vehicle systems. 
 
 ![](example.jpg)
 ## OCR Pipeline Architecture
