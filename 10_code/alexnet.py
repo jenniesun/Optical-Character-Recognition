@@ -9,6 +9,7 @@ Original file is located at
 
 import tensorflow as tf
 
+import tensorflow as tf
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
@@ -185,8 +186,8 @@ lrr= ReduceLROnPlateau(monitor='val_accuracy', actor=.01, patience=3, min_lr=1e-
 
 #Defining the parameters
 batch_size= 320
-epochs=15
-learn_rate=.001
+epochs=150
+learn_rate=.000025
 
 #Training the model
 AlexNet.fit_generator(train_generator.flow(train_X, train_y, batch_size=batch_size), epochs = epochs,  steps_per_epoch = train_X.shape[0]//batch_size,
@@ -218,15 +219,199 @@ from sklearn.metrics import confusion_matrix
 
 confusion_matrix(y_true, y_pred)
 
-!mkdir -p saved_model
-AlexNet.save('saved_model/updated_alexnet')
+#!mkdir -p saved_model
+#AlexNet.save('saved_model/updated_alexnet')
 
-new_model = tf.keras.models.load_model('saved_model/my_model')
+#new_model = tf.keras.models.load_model('saved_model/my_model')
 
 # Check its architecture
-new_model.summary()
+#new_model.summary()
 
-!ls saved_model
+#!ls saved_model
 
+# Code to read csv file into Colaboratory:
+!pip install -U -q PyDrive
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from google.colab import auth
+from oauth2client.client import GoogleCredentials
+# Authenticate and create the PyDrive client.
+auth.authenticate_user()
+gauth = GoogleAuth()
+gauth.credentials = GoogleCredentials.get_application_default()
+drive = GoogleDrive(gauth)
 
+import pandas as pd
+id_data = '1N0wuTk3QFogaJ5zeqXI8TeJIucsYTfpz'
+downloaded = drive.CreateFile({'id':id_data}) 
+downloaded.GetContentFile('char74.pkl')  
+df = pd.read_pickle('char74.pkl')
+
+images = df['X']
+labels = df['y']
+
+images.shape
+
+from sklearn.model_selection import train_test_split
+train_X,test_X,train_y,test_y=train_test_split(images,labels,test_size=.4)
+
+val_X,test_X,val_y,test_y=train_test_split(test_X,test_y,test_size=.5)
+
+#Verifying the dimension after one hot encoding
+print((train_X.shape,train_y.shape))
+print((val_X.shape,val_y.shape))
+print((test_X.shape,test_y.shape))
+
+import numpy as np
+train_X = np.expand_dims(train_X, axis=3)
+val_X = np.expand_dims(val_X, axis=3)
+test_X = np.expand_dims(test_X, axis=3)
+
+#Verifying the dimension after one hot encoding
+print((train_X.shape,train_y.shape))
+print((val_X.shape,val_y.shape))
+print((test_X.shape,test_y.shape))
+
+#Onehot Encoding the labels.
+from sklearn.utils.multiclass import unique_labels
+from keras.utils import to_categorical
+#Since we have 47 classes we should expect the shape[1] of y_train,y_val and y_test to change from 1 to 10
+train_y=to_categorical(train_y, num_classes = 62)
+val_y=to_categorical(val_y, num_classes = 62)
+test_y=to_categorical(test_y, num_classes = 62)
+
+#Image Data Augmentation
+from keras.preprocessing.image import ImageDataGenerator
+
+train_generator = ImageDataGenerator(rotation_range=2, horizontal_flip=True,zoom_range=.1 )
+
+val_generator = ImageDataGenerator(rotation_range=2, horizontal_flip=True,zoom_range=.1)
+
+test_generator = ImageDataGenerator(rotation_range=2, horizontal_flip= True,zoom_range=.1)
+
+#Fitting the augmentation defined above to the data
+train_generator.fit(train_X)
+val_generator.fit(val_X)
+test_generator.fit(test_X)
+
+import tensorflow as tf
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
+from keras.layers.normalization import BatchNormalization
+import numpy as np
+
+np.random.seed(1000)
+
+#Instantiation
+AlexNet = Sequential()
+
+#1st Convolutional Layer
+AlexNet.add(Conv2D(filters=96, input_shape=(28,28,1), kernel_size=(11,11), strides=(4,4), padding='same'))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('relu'))
+AlexNet.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='same'))
+
+#2nd Convolutional Layer
+AlexNet.add(Conv2D(filters=256, kernel_size=(5, 5), strides=(1,1), padding='same'))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('relu'))
+AlexNet.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='same'))
+
+#3rd Convolutional Layer
+AlexNet.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('relu'))
+
+#4th Convolutional Layer
+AlexNet.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('relu'))
+
+#5th Convolutional Layer
+AlexNet.add(Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), padding='same'))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('relu'))
+AlexNet.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='same'))
+
+#Passing it to a Fully Connected layer
+AlexNet.add(Flatten())
+# 1st Fully Connected Layer
+AlexNet.add(Dense(4096, input_shape=(28,28,1,)))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('relu'))
+# Add Dropout to prevent overfitting
+AlexNet.add(Dropout(0.4))
+
+#2nd Fully Connected Layer
+AlexNet.add(Dense(4096))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('relu'))
+#Add Dropout
+AlexNet.add(Dropout(0.4))
+
+#3rd Fully Connected Layer
+AlexNet.add(Dense(1000))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('relu'))
+#Add Dropout
+AlexNet.add(Dropout(0.4))
+
+#Output Layer
+AlexNet.add(Dense(62))
+AlexNet.add(BatchNormalization())
+AlexNet.add(Activation('softmax'))
+
+#Model Summary
+AlexNet.summary()
+
+# Compiling the model
+AlexNet.compile(loss = keras.losses.categorical_crossentropy, optimizer= 'adam', metrics=['accuracy'])
+
+#Learning Rate Annealer
+from keras.callbacks import ReduceLROnPlateau
+lrr= ReduceLROnPlateau(monitor='val_accuracy', actor=.01, patience=3, min_lr=1e-5) 
+early_stopping = tf.keras.callbacks.EarlyStopping(
+    monitor = 'val_loss', 
+    patience = 10, 
+    mode = 'auto')
+#Defining the parameters
+batch_size= 32
+epochs=200
+learn_rate=.0000025
+
+#Verifying the dimension after one hot encoding
+print((train_X.shape,train_y.shape))
+print((val_X.shape,val_y.shape))
+print((test_X.shape,test_y.shape))
+
+#Training the model
+AlexNet.fit_generator(train_generator.flow(train_X, train_y, batch_size=batch_size), epochs = epochs,  steps_per_epoch = train_X.shape[0]//batch_size,
+                      validation_data = val_generator.flow(val_X, val_y, batch_size=batch_size), validation_steps =  val_X.shape[0]//batch_size, 
+                      callbacks = [lrr, early_stopping], verbose=1)
+
+import matplotlib.pyplot as plt
+#Plotting the training and validation loss
+
+f,ax=plt.subplots(2,1) #Creates 2 subplots under 1 column
+
+#Assigning the first subplot to graph training loss and validation loss
+ax[0].plot(AlexNet.history.history['loss'],color='b',label='Training Loss')
+ax[0].plot(AlexNet.history.history['val_loss'],color='r',label='Validation Loss')
+
+#Plotting the training accuracy and validation accuracy
+ax[1].plot(AlexNet.history.history['accuracy'],color='b',label='Training  Accuracy')
+ax[1].plot(AlexNet.history.history['val_accuracy'],color='r',label='Validation Accuracy')
+
+plt.legend()
+
+y_pred=AlexNet.predict_classes(test_X)
+y_true=np.argmax(test_y,axis=1)
+
+from sklearn.metrics import accuracy_score
+acc_score = accuracy_score(y_true, y_pred)
+print('Accuracy Score = ', acc_score)
+
+!mkdir -p saved_model
+AlexNet.save('saved_model/updated_alexnet')
 
