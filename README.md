@@ -29,7 +29,7 @@ EMNIST Balanced Dataset Structure
 EMNIST Balanced Dataset Visualization - 47 Classes
 
 **Chars74K** 
-* Link to the dataset: http://www.ee.surrey.ac.uk/CVSSP/demos/chars74k/ \
+* Link to the dataset: http://www.ee.surrey.ac.uk/CVSSP/demos/chars74k/ 
 The Chars74K dataset is the other dataset we used. This dataset consists of symbols used in both English and Kannada. We used the English part of the dataset, which consists of 64 classes (0-9, A-Z, a-z), with a total of 7705 characters obtained from natural images, 3410 hand drawn characters using a tablet PC, and 62992 synthesised characters from computer fonts. This gives a total of over 74K image samples. \
 
 ![](chars74k.png)
