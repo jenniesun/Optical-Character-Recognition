@@ -44,5 +44,7 @@ The Chars74K dataset is the other dataset we used. This dataset consists of symb
 ![](chars74k.png) \
 *Chars74K Dataset Visualization - 64 Classes*
 
+The preprocessing code can be found in the Jupyter notebooks from the 20_notebook/LeNet directory.
+
 ## Conclusions
 Currently, our pipeline is only suitable for detecting text in static images. Going forward, we would also like to apply this technique to perform real-time text recognition. Once we have optimized the performance of our model to a greater extent, we can integrate our OCR pipeline with services that convert text into audible speech (e.g., AWS Text-to-Voice Solutions) for close-to real-time street navigation aid. Although there still exists a gap in terms of accuracy and computational speed between our pipeline and cutting-edge OCR techniques, we believe this project has made a meaningful attempt in envisioning a more tech-integrated environment where people with disabilities can lead a quality life just like other members of the society. 
