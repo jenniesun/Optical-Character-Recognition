@@ -7,7 +7,7 @@ Previous approaches for text detection and information extraction with Optical C
 ![](example.jpg)
 ## OCR Pipeline Architecture
 
-![](OCR_pipeline.png) \
+![](OCR_pipeline.png) 
 
 ## I Text Localization
 ## II Character Segmentation
