@@ -2,19 +2,27 @@
 # Optical Character Recognition
 - This project aims to envision a solution to real-time street recognition problem, which can have impactful applications including but not limited to: assisting the visually impaired and auto-pilot vehicle systems. 
 
+Previous approaches for text detection and information extraction with Optical Character Recognition (OCR) techniques have already achieved promising performances across various applications. However, open source text recognition softwares, such as Tesseract, tends to fall short when recognizing natural scene text-based images. In this work, we propose a pipeline that combines a tuned convolutional neural network (CNN) model (LeNet) and an existing deep learning model (OpenCV’s EAST text detector), which yields relatively accurate text detection and localization results for street sign images. This pipeline performs text localization, character segmentation, and character classification from input text-based images, and outputs recognized digital text as the results. When further combined with a text-to-speech program, this pipeline can potentially provide people who are blind or visually impared with the technology and ability to recognize and read street signs. 
+
 ![](example.jpg)
 ## OCR Pipeline Architecture
 
+![](OCE_pipeline.png) \
 
 ## I Text Localization
 ## II Character Segmentation
 ## III Character Recognition
+During the early stage of the analysis, we trained 3 traditional machine learning models and 2 CNN models on the EMNIST Balanced dataset and evaluated our model performance by comparing the accuracy scores across five different models. 
+
 **(1)** Logistic Regression \
 **(2)** SVM \
 **(3)** Multilayer Perceptron \
 **(4)** AlexNet \
 **(5)** LeNet 
 
+Below summarizes accuracies from those models: \
+![](model_acc.png) \
+*Summary Table of Test Accuracy by Model*
 
 ## Datasets
 
