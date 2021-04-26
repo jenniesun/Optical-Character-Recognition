@@ -6,7 +6,6 @@
 
 - This pipeline performs text localization, character segmentation, and character classification from input text-based images, and outputs recognized digital text as the results. When further combined with a text-to-speech program, this pipeline can potentially provide people who are blind or visually impared with the technology and ability to recognize and read street signs. 
 
-![](example.jpg)
 <img src="example.jpg"  width="500" height="300">
 ## OCR Pipeline Architecture
 
