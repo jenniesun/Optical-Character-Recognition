@@ -10,9 +10,6 @@ Previous approaches for text detection and information extraction with Optical C
 ![](OCR_pipeline.png) \
 *Pipeline flowchart*
 
-## I Text Localization
-## II Character Segmentation
-## III Character Recognition
 During the early stage of the analysis, we trained 3 traditional machine learning models and 2 CNN models on the EMNIST Balanced dataset and evaluated our model performance by comparing the accuracy scores across five different models. 
 
 **(1)** Logistic Regression \
